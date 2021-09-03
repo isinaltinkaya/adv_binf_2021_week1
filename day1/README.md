@@ -73,7 +73,7 @@ samtools faidx genome.fa chr:X-Y
 - Which chromosome has the most reads aligned to it? `samtools view -c`
 - Mean read length, read length distribution
 - How long is the reference genome? 
-- ```bash
+```bash
 samtools faidx ${FILE}
 ```
 - How many reads has their mates were unmapped?
