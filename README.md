@@ -13,18 +13,10 @@ Once the short reads fragments have been mapped, different read bases will be pi
 #### Draft repository structure:
 
 ```bash
-{REPOSITORY_NAME}
-├── day1
-│   ├── exercises
-│   │   ├── exercise_1
-│   │   └── exercise_2
-│   └── class_notes
-├── day2
-│   ├── exercises
-│   └── class_notes
+/TEACHING/BIOINF21/
 ├── data
-└── README.md
-
+├── programs
+└── students
 ```
 
 
@@ -34,7 +26,7 @@ Once the short reads fragments have been mapped, different read bases will be pi
 
 
 ```bash
-/PATH/TO/{CLASSID}
+/TEACHING/BIOINF21/students
 ├── student-id-1
 │   └── {REPOSITORY}
 ├── student-id-2
@@ -44,10 +36,13 @@ Once the short reads fragments have been mapped, different read bases will be pi
 ```
 
 ```bash
-ssh {SERVER}
+ssh -X {SERVER}
 ```
 
-Class working directory: `PATH/TO/CLASSID`
+Class working directory: `/TEACHING/BIOINF21/`
+Student working directory: `/TEACHING/BIOINF21/students/<student_id>`
+
+
 
 
 ```bash
