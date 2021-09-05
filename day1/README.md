@@ -1,5 +1,18 @@
 # Day 1: NGS data - Workflow, formats and programs
 
+**0. Getting started**
+
+**1. Working with FASTA files**
+
+**2. FASTQ files**
+
+**3. Adapter trimming using fastp**
+
+**4. Sequence Alignment/Map Formats: SAM, BAM and CRAM**
+
+**5. Testing for Damage Patterns with mapDamage**
+
+**6. Variant Call Formats: VCF and BCF**
 
 ## Getting started
 
@@ -165,7 +178,7 @@ ___
 ___
 
 
-## 2. FASTQ
+## 2. FASTQ files
 
 
 Working directory: `day1/data/fastq`
@@ -279,15 +292,7 @@ $ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA"
 $ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' >> fragment_lengths_L001_R1.txt
 ```
 
-```sh
-$ R
-> d<- scan("fragment_lengths_L001_R1")
-Read 1416689 items
-> hist(d)
-> summary(d)
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  35.00   75.00   76.00   75.37   76.00   76.00 
-```
+
 
 ___
 ___
