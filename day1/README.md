@@ -59,11 +59,13 @@ day1
 │   ├── fastq
 │   ├── reference_fasta
 │   └── reference_fasta_hs37d5
-└── exercises
-    ├── alignment_formats
-    ├── mapdamage
-    ├── trimming
-    └── variant_call_format
+├── exercises
+│   ├── alignment_formats
+│   ├── mapdamage
+│   ├── trimming
+│   └── variant_call_format
+├── Makefile
+└── README.md
 ```
 
 Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see [GithHub Lab](https://lab.github.com/) (optional).
