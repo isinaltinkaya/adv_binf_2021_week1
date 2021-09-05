@@ -36,24 +36,23 @@ CHANGEME
 We have 3 main directories.
 
 ```sh
-data
-├── fastq
-│   ├── DATA_L001_R1.fastq.gz
-│   └── DATA_L001_R2.fastq.gz
-└── reference_fasta
-    ├── chr21.fa.gz
-    ├── chr21.fa.gz.amb
-    ├── chr21.fa.gz.ann
-    ├── chr21.fa.gz.bwt
-    ├── chr21.fa.gz.pac
-    └── chr21.fa.gz.sa
+├── data
+│   ├── alignment
+│   ├── fasta
+│   ├── fastq
+│   └── reference_fasta
+└── exercises
+    ├── alignment_formats
+    ├── mapdamage
+    └── trimming
+
 ```
 
 ```bash
 /TEACHING/BIOINF21/
 ├── data
 ├── programs
-└── 
+└── github
 ```
 
 
@@ -66,9 +65,15 @@ $ cd adv_binf_2021_week1
 ## 1. Working with FASTA files
 
 
-A file in FASTA format consists of:
-- One line starting with a ">" sign followed by a sequence identifier.
-- One or more lines containing the sequence itself. 
+**File extensions:** `.fasta` or `.fa` for generic FASTA (See [this link](https://en.wikipedia.org/wiki/FASTA_formathttps://en.wikipedia.org/wiki/FASTA_format) for details on other FASTA extensions `.fna` `.ffn` `.faa` and `.frn`)
+
+
+For each record:
+
+Line | Contains | Description | Example
+--- | --- | --- | ---
+1 | Sequence ID | Starts with a `>` sign followed by a sequence identifier. | `>Chr21`
+2+ | Sequence | One or more lines containing the sequence itself. | `CACCTCCCCTCAGGCCGCATTGCAGTGGGGGCTGAGAGGAGGAAGCACCATGGCCCACCTCTTCTCACCCCT`
 
 
 ```sh
@@ -160,15 +165,19 @@ wget 'ftp://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr21.fa.gz' -O 
 
 ## 2. FASTQ
 
+**File extensions:** `.fastq` or `.fq`
 
-A FASTQ file consists of four lines per sequence:
+Line | Contains | Description | Example
+--- | --- | --- | ---
+1 | Read ID | Begins with a `@` character and is followed by a sequence identifier and description (optional) |  `@NS500474:51:HK7FVAFXX:1:11101:5669:1056 1:N:0:GACACT+NTGACG`
+2 | Base calls | Raw sequence letters | `CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT`
+3 | Seperator or additional information (optional) | Begins with a `+` character and is optionally followed by the sequence identifier and descriptions (if any) | `+`
+4 | Sequencing base quality (1 per base call) |  encodes the quality values for the sequence in Line 2, and must contain the same number of symbols as letters in the sequence. Each letter in line 4 corresponds to the base quality score of the sequence with the same index in line 2. | `AAAAAEEEEEEEEEEEEEEEE6EEEEEEEEEEEEEEEEAEEEEE/EEEE/EEEEEAEEEEEEEEEEEEEEEE/<A`
 
-- Line 1 begins with a `@` character and is followed by a sequence identifier and an optional description.
-- Line 2 is the raw sequence letters.
-- Line 3 begins with a `+` character and is optionally followed by the sequence identifier and descriptions (if any).
-- Line 4 encodes the quality values for the sequence in Line 2, and must contain the same number of symbols as letters in the sequence. Each letter in line 4 corresponds to the base quality score of the sequence with the same index in line 2. 
 
-**2.1 Get the first read from lane 1 read 1**
+
+
+**2.1. Get the first read from lane 1 read 1**
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | head -4
 @NS500474:51:HK7FVAFXX:1:11101:5669:1056 1:N:0:GACACT+NTGACG
@@ -177,7 +186,7 @@ CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT
 AAAAAEEEEEEEEEEEEEEEE6EEEEEEEEEEEEEEEEAEEEEE/EEEE/EEEEEAEEEEEEEEEEEEEEEE/<A
 ```
 
-**2.2 Get the first read in R1 and R2 from lane 1 and 2**
+**2.2. Get the first read in R1 and R2 from lane 1 and 2**
 
 ```sh
 $ for R in DATA_L00{1,2}_R*.fastq.gz; do echo "FILE: $R"; zcat $R|head -4;done
@@ -203,7 +212,7 @@ GGGGGGGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNGGGGGGGGGGNNNNN
 AAAAAEE######################################################///////<//#####
 ```
 
-**2.3 Return only the first 5 reads from a FASTQ file**
+**2.3. Return only the first 5 reads from a FASTQ file**
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | sed -n '2~4p' | head -5
 CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT
@@ -222,14 +231,14 @@ GCCCGGCACGATCACACCGGGGCTAGATCGGAAGAGCACACGTCTGAACTCCAGTCACGAGACTATCTCGTATGC
 GCCGCGGAACTCGCAAAGGCGTTCGGCGTGGACGTCCCGACTGCCAAACGCAGAACGGAAGAGCACACGTCAGAA
 GGCTGTTGCTGCCTCGGGAGCATCAATCTCGCGAGATCGGAAGAGCACACGTCTGAACTCGAGTCACGACACTAT
 ```
-**2.4 Calculate the mean length**
+**2.4. Calculate the mean length**
 
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}'
 75.37
 ```
 
-**2.5 Which lane contains the highest and lowest number of raw sequence reads?**
+**2.5. Which lane contains the highest and lowest number of raw sequence reads?**
 
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print $0}'|wc -l
@@ -250,7 +259,7 @@ $ zcat DATA_L001_R1.fastq.gz | grep -c "^@"
 1416689
 ```
 
-**2.6 How many times do we see the motif "GATTACA"?**
+**2.6. How many times do we see the motif "GATTACA"?**
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA" 
 1147
@@ -258,7 +267,7 @@ $ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA"
 
 
 
-**2.7 Get fragment size statistics and distribution from a FASTQ file**
+**2.7. Get fragment size statistics and distribution from a FASTQ file**
 
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' >> fragment_lengths_L001_R1
@@ -275,11 +284,9 @@ Read 1416689 items
   35.00   75.00   76.00   75.37   76.00   76.00 
 ```
 
-## Adapter trimming using fastp
+## 3. Adapter trimming using [fastp](https://github.com/OpenGene/fastp)
 
-
-https://github.com/OpenGene/fastp
-
+Working directory: `day1/exercises/trimming`
 
 
 - `--out1` and `--out2` outputs the reads that cannot be merged successfully, but both pass all the filters.
@@ -289,11 +296,20 @@ https://github.com/OpenGene/fastp
 - By default, fastp uses overlap analysis to do adapter trimming. However, you can specify `--detect_adapter_for_pe` to enable adapter trimming by adapter sequence detection.
 
 
-
 ```sh
-cd day1/exercises/trimming
-
 fastp --in1 ../../data/fastq/DATA_L001_R1.fastq.gz --in2 ../../data/fastq/DATA_L001_R2.fastq.gz --out1 DATA_L001_R1_trimmed.fastq.gz --out2 DATA_L001_R2_trimmed.fastq.gz --merge --merged_out DATA_L001_merged_trimmed.fastq.gz --unpaired1 DATA_L001_unpaired_R1.fastq.gz --unpaired2 DATA_L001_unpaired_R2.fastq.gz --length_required 30 --detect_adapter_for_pe
+```
+```sh
+fastp --in1 ../../data/fastq/DATA_L001_R1.fastq.gz \ 
+--in2 ../../data/fastq/DATA_L001_R2.fastq.gz \ 
+--out1 DATA_L001_R1_trimmed.fastq.gz \ 
+--out2 DATA_L001_R2_trimmed.fastq.gz \ 
+--merge \ 
+--merged_out DATA_L001_merged_trimmed.fastq.gz \ 
+--unpaired1 DATA_L001_unpaired_R1.fastq.gz \
+--unpaired2 DATA_L001_unpaired_R2.fastq.gz \ 
+--length_required 30 \ 
+--detect_adapter_for_pe
 ```
 
 It will output the following:
@@ -346,10 +362,9 @@ Read pairs merged: 505004
 
 JSON report: fastp.json
 HTML report: fastp.html
-
 ```
 
-And the following files are generated:
+And the following files will be generated:
 
 ```sh
 .
@@ -376,70 +391,233 @@ scp isin@ricco.popgen.dk:/PATH_TO/fastp.html .
 
 
 
+## 4. Alignment and Sequence Alignment/Map Formats: SAM, BAM and CRAM
+
+Working directory: `day1/exercises/alignment_formats`
 
 
+The SAM format consists of two main sections: the header and the alignment itself. 
 
 
-
-Sort
+**1. Header:** The header consists of the lines beginning with a `@` symbol, and includes details regarding the reference sequence used in alignment.
 ```sh
-samtools sort .bam -o .bam
+$ samtools view -H DATA.bam
+@HD	VN:1.3	SO:coordinate
+@SQ	SN:chr21	LN:48129895
+@PG	ID:bwa	PN:bwa	VN:0.7.15-r1142-dirty	CL:bwa mem ../reference_fasta/chr21.fa.gz ../../exercises/trimming/DATA_L001_merged_trimmed.fastq.gz
+@PG	ID:bwa-7E1842B3	PN:bwa	VN:0.7.15-r1142-dirty	CL:bwa mem ../reference_fasta/chr21.fa.gz ../../exercises/trimming/DATA_L001_R1_trimmed.fastq.gz ../../exercises/trimming/DATA_L001_R2_trimmed.fastq.gz
 ```
 
-Index a bam file
+The line beginning with `@HD` can contain header information including the version (`VN:`) and the sorting order (`SO:`) of the alignments.
+
+There can be one or more lines that start `@SQ` to describe the reference sequences in the file. In our case, as our sample was aligned to only the chromosome 21, we see only one line. Each `@SQ` line can have multiple entries:
+- `SN:` the reference sequence name
+- `LN:` the reference sequence length
+- `AN:` alternate names for this sequence
+- `AS:` how the reference was assembled
+- `M5:` the [MD5sum](https://en.wikipedia.org/wiki/Md5sum) of the sequence
+- `SP:` the species, and
+- `UR:` the URL for the sequence.
+
+**2. Alignment:** Each line contains 11 fields (all required) and the fields are separated by tab symbols. The fields are:
+
+Column index | Field Name | Type | Description
+--- | --- | --- | --- 
+0 | QNAME | String | Query sequence name
+1 | FLAG | Integer | Bitwise flag
+2 | RNAME | String | Reference sequence name
+3 | POS | Integer | Left most mapping position (1-based)
+4 | MAPQ | Integer | Mapping quality score
+5 | CIGAR | String | The CIGAR string for the alignment
+6 | RNEXT | String | The reference name of the mate (or next read)
+7 | PNEXT | Integer | The position of the mate (or next read)
+8 | TLEN | Integer | The observed template length
+9 | SEQ | String | The sequence of the segment
+10 | QUAL | String | The ASCII representation of the base quality score
+
+
+**Bitwise flags:** The FLAGs in the second column (column 1) are comprised of a bitwise combination of numbers. Details can be found at [Decoding SAM Flags webpage](https://broadinstitute.github.io/picard/explain-flags.html).
+
+
+**4.1. How many reads do we have for each different FLAG in our BAM file?**
 ```sh
-samtools index SRR1234567/SRR1234567.sorted.bam
+$ samtools view DATA.bam |cut -f2|sort -n|uniq -c
+   1852 0
+ 501278 4
+   1874 16
+     13 69
+     12 73
+  41104 77
+      1 81
+     80 83
+      2 97
+     73 99
+      4 113
+     13 117
+     11 121
+     12 133
+     13 137
+  41104 141
+      2 145
+     73 147
+      1 161
+     80 163
+      4 177
+     11 181
+     13 185
+      1 2048
+      1 2161
+      1 2233
 ```
 
-Get HLCS gene (chr21:38,120,926-38,362,511) and write to a new bam file
+**4.2. What properties does a read with FLAG value of 82 have?**
+
+If we have 82 as the FLAG, since `2+16+64=82` we can understand that that the sequence is properly aligned, is reverse complemented, and is the first in pair.
+
+
+
+**CIGAR string:** The CIGAR string is a representation of the sequence alignment in an abbreviated form. The letters correspond to:
+
+Code | Description
+--- | ---
+M | Alignment match (but could be a sequence match or mismatch!)
+I | Insertion relative to the reference
+D | Deletion from the reference (i.e. insertion relative to the query!)
+N | Reference skipped
+S | soft clipping
+H | Hard clipping
+P | Padding
+= | Sequence match
+X | Sequence mismatch
+
+**4.3. What properties does a read with CIGAR string of 3M1D2M?**
+
+Thus the CIGAR string 2M1D3M means there are three matches, 1 insertion in the query (1 deletion in the reference), and two more matches.
+
+
+
+
+**4.4. Sort SAM files by coordinates**
 ```sh
-samtools view sample.bam chr21:38120926-38362511 -b >s HLCS.bam
+$ samtools sort DATA_L001_R1_R2.sam >> DATA_L001_R1_R2_sorted.bam
+$ samtools sort DATA_L001_merged.sam >> DATA_L001_merged_sorted.bam
+```
+
+**4.5. Merge BAM files into one file called `DATA.bam`**
+```sh
+$ samtools merge DATA.bam DATA_L001_merged_sorted.bam DATA_L001_R1_R2_sorted.bam
+```
+
+**4.6 Index the bam file**
+```sh
+$ samtools index DATA.bam
+```
+
+
+**4.7. Get mapped reads and write to a new file called `DATA_mapped.bam`** 
+
+`-F` corresponds to "exclude reads with flag \<INT\>"
+```sh
+$ samtools view -F 4 -h -b DATA.bam > DATA_mapped.bam
+```
+
+**4.8. Count the number of unmapped reads** 
+
+`-f` corresponds to "only include reads with flag \<INT\>"
+```sh
+$ samtools view -f 4 -c DATA.bam
+```
+
+
+**4.9. Get the HLCS gene (chr21:38,120,926-38,362,511) and write to a new bam file**
+```sh
+$ samtools view -h -T ../reference_fasta/chr21.fa.gz -C DATA.bam chr21:38120926-38362511  > DATA_HLCS.cram
+```
+
+
+**4.10. How many reads overlap with the HLCS gene?**
+```sh
+$ samtools view -c DATA_HLCS.cram 
+```
+
+**4.11. Inspect the alignment in region `chr21:14338386-14338400` visually using `samtools tview`**
+
+You can save the output as an html file and view it using `firefox --no-remote`
+```sh
+$ samtools tview DATA.bam -p chr21:14338386-14338400 -d html >> DATA_chr21_14338386-14338400_tview.html
+$ firefox --no-remote DATA_chr21_14338386-14338400_tview.html 
+```
+or you can directly view it in command-line:
+```sh
+$ samtools tview DATA.bam -p chr21:14338386-14338400
+```
+
+
+**4.12. What is the mean depth of the file `DATA.bam` given a minimum mapping quality of 30 and a minimum base quality of 20?**
+```sh
+$ samtools depth -Q 30 -q 20 DATA.bam | cut -f3|datamash mean 1
+1.0677556818182
+```
+
+
+**4.13. Get alignment statistics using `samtools stats` and write to a file called `DATA.stats`, then plot it using `plot-bamstats`**
+```sh
+$ samtools stats DATA.bam >> DATA_stats.txt
+$ plot-bamstats DATA_stats.txt -p DATA_stats
+```
+
+**4.14. Check if the bam file is corrupted or not**
+
+
+```sh
+$ samtools quickcheck DATA.bam && echo "Data looks OK" || echo "Data is corrupted"
+Data looks OK
+
+$ samtools quickcheck -vvv DATA.bam 
+verbosity set to 3
+checking DATA.bam
+opened DATA.bam
+DATA.bam is sequence data
+DATA.bam has 1 targets in header.
+DATA.bam has good EOF block.
+
+$ samtools quickcheck DATA_bad.bam && echo "Data looks OK" || echo "Data is corrupted"
+Data is corrupted
+
+$ samtools quickcheck -vvv DATA_bad.bam 
+verbosity set to 3
+checking DATA_bad.bam
+opened DATA_bad.bam
+DATA_bad.bam is sequence data
+DATA_bad.bam has 1 targets in header.
+DATA_bad.bam was missing EOF block when one should be present.
+DATA_bad.bam
 ```
 
 
 
 
+## 5. Testing for Damage Patterns with [mapDamage](https://ginolhac.github.io/mapDamage/)
 
+Working directory: `day1/exercises/mapdamage`
 
-
-### SAM, BAM and CRAM files
-
-
-samtools tveiw
-cram
-index
-
-count the number of reads in bam files
-```sh
-samtools view -c sample.bam
+```bash
+$ mapDamage -i ../../data/alignment/DATA.bam -r ../../data/reference_fasta/chr21.fa.gz --no-stats
 ```
 
-count the number of mapped reads
+Generates the following files:
 ```sh
-samtools view -F 4 -c SRR1234567/SRR1234567.bam
-```
-
-count the number of unmapped reads in sam/bam files
-```sh
-samtools view -f 4 -c SRR1234567/SRR1234567.bam
-```
-
-show statistics of sam/bam files
-```sh
-samtools stats SRR1234567/SRR1234567.bam
-```
-
-check whether my alignment file is sorted lexicographically (list all the chromosomes)
-```sh
-samtools view SRR1234567/SRR1234567.bam | cut -f3 | uniq
-```
+DATA.mapDamage/
+├── dnacomp.txt
+├── Fragmisincorporation_plot.pdf
+├── Length_plot.pdf
+├── lgdistribution.txt
+├── misincorporation.txt
+└── Runtime_log.txt
+````
 
 
-
-### alignment/mapping
-
-
-### bcf/vcf
+## 6. bcf/vcf
 
 
 ### Mpileup
@@ -460,27 +638,13 @@ gunzip -c angsdput.mafs.gz
 
 
 ### Coverage/Depth
-```bash
-samtools depth ${FILE}
-```
 
 ### Stats
-```bash
-samtools stats ${FILE}
-```
-
-```bash
-samtools quickcheck -vvv ${FILE}
-```
 
 ### Using Flags
 https://broadinstitute.github.io/picard/explain-flags.html
 
 
-### Damage
-```bash
- mapDamage -i ${FILE} -r reference.fasta
-```
 
 ### Extract regions
 ```bash
@@ -517,7 +681,7 @@ echo hi
 ```
 
 
-
+mapdamage
 
 
 ### Extract regions
