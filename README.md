@@ -3,6 +3,11 @@
 
 
 
+Day | Time |  Subject | Lecturer
+--- | --- | --- | ---
+Day 1 - Monday | 9:15 - 12 | NGS data - Workflow, formats and programs | Thorfinn Sand Korneliussen
+Day 2 - Tuesday | 13:15 - 16 | - | -
+Day 3 - Friday | 9:15 - 12 | - | - | -
 
 Friday(10/9/2021, Lei Zhao): 
 Given that the BWT algorithm is introduced, I will introduce the MapQ score, a measurement to assess alignment. Based on the On the accuracy of short read mapping.
@@ -10,26 +15,53 @@ Once the short reads fragments have been mapped, different read bases will be pi
 
 
 
-```bash
-ssh -X {SERVER}
+
+# Getting started
+## Connecting to the server via SSH
+
+
+X11 forwarding method will allow you to start a graphical application on the remote system and forward this application's windows to your local system. We need to enable X11 forwarding to view the plots we will be generating for the exercises.
+
+We use `-X` option to enable X11 forwarding over SSH:
+
+```sh
+$ ssh -X <your_username>@<server_name_or_ip>
 ```
+
+Replace with your remote server username. For example:
+
+
+```sh
+$ ssh -X isin@ricco.popgen.dk
+```
+
+
+
+
+## Working environment setup
+
 
 Class working directory: `/TEACHING/BIOINF21/`
-Student working directory: `/TEACHING/BIOINF21/students/<student_id>`
 
 
 
+
+CHANGEME
+We have 3 main directories.
 
 ```bash
-cd /PATH/TO/{CLASSID}
-mkdir {STUDENT-ID}
-cd {STUDENT-ID}
+/TEACHING/BIOINF21/
+├── data
+├── programs
+└── students
 ```
 
-Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see https://lab.github.com/ (not required).
 
-```bash
-git clone {REPO_LINK}
+Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see https://lab.github.com/ (optional).
+
+```sh
+$ git clone https://github.com/isinaltinkaya/adv_binf_2021_week1
+$ cd adv_binf_2021_week1
 ```
 
 
