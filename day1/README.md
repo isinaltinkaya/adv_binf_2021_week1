@@ -399,9 +399,13 @@ Alternatively, you can use `scp` to download the output html file to your local 
 ```sh
 scp isin@ricco.popgen.dk:/PATH_TO/fastp.html .
 ```
+**3.1. What is the proportion of reads with residual adapters?**
+```sh
+2428136/(1416689*2)
+[1] 0.8569757
+```
 
-
-**3.1. Compare the average fragment length of merged reads, read 1 and read 2 after trimming**
+**3.2. Compare the average fragment length of merged reads, read 1 and read 2 after trimming**2
 ```sh
 $ for FILE in *trimmed.fastq.gz;do echo ${FILE}; zcat ${FILE}| awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}';done
 DATA_L001_merged_trimmed.fastq.gz
@@ -411,7 +415,6 @@ DATA_L001_R1_trimmed.fastq.gz
 DATA_L001_R2_trimmed.fastq.gz
 72.4403
 ```
-
 ___
 ___
 ___
