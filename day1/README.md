@@ -8,8 +8,6 @@
 
 
 
-
-
 X11 forwarding method will allow you to start a graphical application on the remote system and forward this application's windows to your local system. We need to enable X11 forwarding to view the plots we will be generating for the exercises.
 
 We use `-X` option to enable X11 forwarding over SSH:
@@ -29,7 +27,6 @@ $ ssh -X isin@ricco.popgen.dk
 
 
 ### Setting up the working environment
-
 
 
 CHANGEME
@@ -60,7 +57,9 @@ We have 3 main directories.
 $ git clone https://github.com/isinaltinkaya/adv_binf_2021_week1
 $ cd adv_binf_2021_week1
 ```
-
+___
+___
+___
 
 ## 1. Working with FASTA files
 
@@ -160,10 +159,16 @@ sequence4	155
 wget 'ftp://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr21.fa.gz' -O chr21.fa.gz
 ```
 
-
+___
+___
+___
 
 
 ## 2. FASTQ
+
+
+Working directory: `day1/data/fastq`
+
 
 **File extensions:** `.fastq` or `.fq`
 
@@ -270,7 +275,7 @@ $ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA"
 **2.7. Get fragment size statistics and distribution from a FASTQ file**
 
 ```sh
-$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' >> fragment_lengths_L001_R1
+$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' >> fragment_lengths_L001_R1.txt
 ```
 
 
@@ -288,17 +293,8 @@ Read 1416689 items
 
 Working directory: `day1/exercises/trimming`
 
+We will use `fastp` for adapter trimming. Some examples of other commonly used FASTQ preprocessing and adapter removal tools are [AdapterRemoval](https://adapterremoval.readthedocs.io/en/latest/) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic).
 
-- `--out1` and `--out2` outputs the reads that cannot be merged successfully, but both pass all the filters.
-- `--merged_out` specifies the file name to write the merged reads.
-- `--unpaired1` outputs be the reads that cannot be merged, read1 passes filters but read2 doesn't.
-- `--unpaired2` outputs be the reads that cannot be merged, read2 passes filters but read1 doesn't.
-- By default, fastp uses overlap analysis to do adapter trimming. However, you can specify `--detect_adapter_for_pe` to enable adapter trimming by adapter sequence detection.
-
-
-```sh
-fastp --in1 ../../data/fastq/DATA_L001_R1.fastq.gz --in2 ../../data/fastq/DATA_L001_R2.fastq.gz --out1 DATA_L001_R1_trimmed.fastq.gz --out2 DATA_L001_R2_trimmed.fastq.gz --merge --merged_out DATA_L001_merged_trimmed.fastq.gz --unpaired1 DATA_L001_unpaired_R1.fastq.gz --unpaired2 DATA_L001_unpaired_R2.fastq.gz --length_required 30 --detect_adapter_for_pe
-```
 ```sh
 fastp --in1 ../../data/fastq/DATA_L001_R1.fastq.gz \ 
 --in2 ../../data/fastq/DATA_L001_R2.fastq.gz \ 
@@ -311,10 +307,17 @@ fastp --in1 ../../data/fastq/DATA_L001_R1.fastq.gz \
 --length_required 30 \ 
 --detect_adapter_for_pe
 ```
+- `--out1` and `--out2` outputs the reads that cannot be merged successfully, but both pass all the filters.
+- `--merged_out` specifies the file name to write the merged reads.
+- `--unpaired1` outputs be the reads that cannot be merged, read1 passes filters but read2 doesn't.
+- `--unpaired2` outputs be the reads that cannot be merged, read2 passes filters but read1 doesn't.
+- By default, fastp uses overlap analysis to do adapter trimming. However, you can specify `--detect_adapter_for_pe` to enable adapter trimming by adapter sequence detection.
 
-It will output the following:
 
 ```sh
+> fastp --in1 ../../data/fastq/DATA_L001_R1.fastq.gz --in2 ../../data/fastq/DATA_L001_R2.fastq.gz --out1 DATA_L001_R1_trimmed.fastq.gz --out2 DATA_L001_R2_trimmed.fastq.gz --merge --merged_out DATA_L001_merged_trimmed.fastq.gz --unpaired1 DATA_L001_unpaired_R1.fastq.gz --unpaired2 DATA_L001_unpaired_R2.fastq.gz --length_required 30 --detect_adapter_for_pe
+
+
 Detecting adapter sequence for read1...
 >Nextera_LMP_Read1_External_Adapter | >Illumina Multiplexing Index Sequencing Primer
 GATCGGAAGAGCACACGTCTGAACTCCAGTCAC
@@ -364,10 +367,9 @@ JSON report: fastp.json
 HTML report: fastp.html
 ```
 
-And the following files will be generated:
+Following files will be generated:
 
 ```sh
-.
 ├── DATA_L001_merged_trimmed.fastq.gz
 ├── DATA_L001_R1_trimmed.fastq.gz
 ├── DATA_L001_R2_trimmed.fastq.gz
@@ -388,6 +390,16 @@ scp isin@ricco.popgen.dk:/PATH_TO/fastp.html .
 ```
 
 
+**3.1. Compare the average fragment length of merged reads, read 1 and read 2 after trimming**
+```sh
+$ for FILE in *trimmed.fastq.gz;do echo ${FILE}; zcat ${FILE}| awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}';done
+DATA_L001_merged_trimmed.fastq.gz
+46.2876
+DATA_L001_R1_trimmed.fastq.gz
+68.5516
+DATA_L001_R2_trimmed.fastq.gz
+72.4403
+```
 
 
 
@@ -490,10 +502,9 @@ P | Padding
 = | Sequence match
 X | Sequence mismatch
 
-**4.3. What properties does a read with CIGAR string of 3M1D2M?**
+**4.3. What properties does a read with CIGAR string of 3M1D2M have?**
 
 Thus the CIGAR string 2M1D3M means there are three matches, 1 insertion in the query (1 deletion in the reference), and two more matches.
-
 
 
 
@@ -514,11 +525,17 @@ $ samtools index DATA.bam
 ```
 
 
-**4.7. Get mapped reads and write to a new file called `DATA_mapped.bam`** 
+**4.7. Get mapped reads and write to a BAM file named `DATA_mapped.bam`, and a CRAM file named `DATA_mapped.cram`. What are the file sizes of the BAM and CRAM files? Are they different, if so, why?** 
+
+We need to use `-T` to provide the reference sequence used in alignment with `-C` to convert a BAM file into a CRAM file. 
 
 `-F` corresponds to "exclude reads with flag \<INT\>"
 ```sh
 $ samtools view -F 4 -h -b DATA.bam > DATA_mapped.bam
+$ samtools view -F 4 -h -T ../../data/reference_fasta/chr21.fa.gz -C DATA.bam > DATA_mapped.cram
+$ du -sh DATA_mapped.{bam,cram}
+912K	DATA_mapped.bam
+100K	DATA_mapped.cram
 ```
 
 **4.8. Count the number of unmapped reads** 
@@ -529,15 +546,18 @@ $ samtools view -f 4 -c DATA.bam
 ```
 
 
-**4.9. Get the HLCS gene (chr21:38,120,926-38,362,511) and write to a new bam file**
+**4.9. Get the HLCS gene (chr21:38,120,926-38,362,511) and write to a CRAM file**
+
 ```sh
-$ samtools view -h -T ../reference_fasta/chr21.fa.gz -C DATA.bam chr21:38120926-38362511  > DATA_HLCS.cram
+$ samtools view -h -T ../../data/reference_fasta/chr21.fa.gz -C DATA.bam chr21:38120926-38362511  > DATA_HLCS.cram
 ```
+
 
 
 **4.10. How many reads overlap with the HLCS gene?**
 ```sh
-$ samtools view -c DATA_HLCS.cram 
+$ samtools view -c DATA_HLCS.cram
+40
 ```
 
 **4.11. Inspect the alignment in region `chr21:14338386-14338400` visually using `samtools tview`**
@@ -618,12 +638,6 @@ DATA.mapDamage/
 
 
 ## 6. bcf/vcf
-
-
-### Mpileup
-```bash
-samtools mpileup ${FILE}
-```
 #generates vcf
 ./bcftools/bcftools mpileup -b bams.list --no-reference |less
 ./bcftools/bcftools mpileup -b bams.list --fasta-ref hs37d5.fa.gz |./bcftools/bcftools call -m -v|less
@@ -637,33 +651,6 @@ gunzip -c angsdput.mafs.gz
 
 
 
-### Coverage/Depth
-
-### Stats
-
-### Using Flags
-https://broadinstitute.github.io/picard/explain-flags.html
-
-
-
-### Extract regions
-```bash
-samtools view ${FILE}
-```
-
-
-### Using 1000G bed
-```bash
-samtools view ${FILE} in.bed
-```
-
-
-
-### vcf/bcf
-### mpileup
-
-
-# generates vcf
 ./bcftools/bcftools mpileup -b bams.list --no-reference |less
 ./bcftools/bcftools mpileup -b bams.list --fasta-ref hs37d5.fa.gz |./bcftools/bcftools call -m -v|less
 
@@ -671,31 +658,24 @@ samtools view ${FILE} in.bed
 bcftools +fill-tags res.bcf -Ob -o res.with.af.bcf
 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%AF\n' res.with.af.bcf
 ./angsd/angsd -b bams.list -domajorminor 1 -gl 1 -domaf 1 -r 1 -snp_pval 1e-6
+
 gunzip -c angsdput.mafs.gz
 
 
+## 7. Mpileup
 
-
-```sh
-echo hi
-```
-
-
-mapdamage
-
-
-### Extract regions
 ```bash
-samtools view ${FILE}
+samtools mpileup ${FILE}
 ```
 
 
 
-bgzip (Blocked GNU Zip Format)
-BAM, BCF and VCF file formats are typically bgzip compressed.
-bgzip files can be uncompressed with gzip
+
 
 ### Other
+
+### bgzip (Blocked GNU Zip Format)
+bgzip files can be uncompressed with gzip
 
 - Base counts: How many As, Cs, Gs, Ts and Ns are there in the fastq file?
 - GC content
@@ -703,13 +683,12 @@ bgzip files can be uncompressed with gzip
 - Which chromosome has the most reads aligned to it? `samtools view -c`
 - Mean read length, read length distribution
 - How long is the reference genome? 
-
 - How many reads has their mates were unmapped?
-- How many insertions and deletions are there in the alignment?
 - How many reads are there that was aligned to a region included in 1000G sites with a mapping quality 30 as minimum?
 - Sort by name, sort by coordinates
-- Cigar strings
-- Write a code for counting the number of lines in each fastq file and write the results into a new file.
 
-Class working directory: `/TEACHING/BIOINF21/`
+
+___
+
+Class working directory including the results of analyses above: `/TEACHING/BIOINF21/`
 
