@@ -960,5 +960,3 @@ If you still have some time left, try to answer these questions:
 ___
 
 Class working directory including the results of analyses above: `/TEACHING/BIOINF21/`
-
-G
