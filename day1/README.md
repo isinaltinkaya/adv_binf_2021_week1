@@ -411,7 +411,7 @@ ___
 ___
 
 
-## 4. Alignment and Sequence Alignment/Map Formats: SAM, BAM and CRAM
+## 4. Sequence Alignment/Map Formats: SAM, BAM and CRAM
 
 Working directory: `day1/exercises/alignment_formats`
 
@@ -631,6 +631,61 @@ $ samtools flagstat DATA.cram
 **4.14. Get alignment statistics using `samtools stats` and write to a file called `DATA.stats`, then plot it using `plot-bamstats`**
 ```sh
 $ samtools stats DATA.bam >> DATA_stats.txt
+```
+You can use `grep` to fetch statistics of interest:
+```sh
+$ cat DATA_stats.txt | grep "^SN"
+SN	raw total sequences:	587630
+SN	filtered sequences:	0
+SN	sequences:	587630
+SN	is sorted:	1
+SN	1st fragments:	546317
+SN	last fragments:	41313
+SN	reads mapped:	4095
+SN	reads mapped and paired:	320	# paired-end technology bit set + both mates mapped
+SN	reads unmapped:	583535
+SN	reads properly paired:	306	# proper-pair bit set
+SN	reads paired:	82626	# paired-end technology bit set
+SN	reads duplicated:	0	# PCR or optical duplicate bit set
+SN	reads MQ0:	2669	# mapped and MQ=0
+SN	reads QC failed:	0
+SN	non-primary alignments:	0
+SN	total length:	29200223	# ignores clipping
+SN	bases mapped:	174032	# ignores clipping
+SN	bases mapped (cigar):	150514	# more accurate
+SN	bases trimmed:	0
+SN	bases duplicated:	0
+SN	mismatches:	3315	# from NM fields
+SN	error rate:	2.202453e-02	# mismatches / bases mapped (cigar)
+SN	average length:	49
+SN	maximum length:	121
+SN	average quality:	34.4
+SN	insert size average:	609.0
+SN	insert size standard deviation:	2072.8
+SN	inward oriented pairs:	33
+SN	outward oriented pairs:	59
+SN	pairs with other orientation:	4
+SN	pairs on different chromosomes:	0
+
+# for coverage distribution
+$ cat DATA_stats.txt | grep "^COV"
+COV	[1-1]	1	141896
+COV	[2-2]	2	12155
+COV	[3-3]	3	857
+COV	[4-4]	4	443
+COV	[5-5]	5	205
+COV	[6-6]	6	93
+COV	[7-7]	7	55
+COV	[8-8]	8	15
+COV	[9-9]	9	22
+COV	[10-10]	10	10
+COV	[14-14]	14	20
+COV	[15-15]	15	6
+COV	[16-16]	16	2
+COV	[17-17]	17	21
+COV	[18-18]	18	24
+```
+```sh
 $ plot-bamstats DATA_stats.txt -p DATA_stats
 ```
 
@@ -818,18 +873,51 @@ $ head NA06985.vcf
 ##bcftoolsCommand=mpileup --fasta-ref ../../data/reference_fasta_hs37d5/chr1.fa.gz -r 1 NA06985.bam
 ##reference=file://../../data/reference_fasta_hs37d5/chr1.fa.gz
 ##contig=<ID=1,length=249250621>
-##contig=<ID=2,length=243199373>
-##contig=<ID=3,length=198022430>
-##contig=<ID=4,length=191154276>
-##contig=<ID=5,length=180915260>
+... skipping the contig lines ...
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPB,Number=1,Type=Float,Description="Mann-Whitney U test of Read Position Bias (bigger is better)">
+##INFO=<ID=MQB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality Bias (bigger is better)">
+##INFO=<ID=BQB,Number=1,Type=Float,Description="Mann-Whitney U test of Base Quality Bias (bigger is better)">
+##INFO=<ID=MQSB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality vs Strand Bias (bigger is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric.">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=AF1,Number=1,Type=Float,Description="Max-likelihood estimate of the first ALT allele frequency (assuming HWE)">
+##INFO=<ID=AF2,Number=1,Type=Float,Description="Max-likelihood estimate of the first and second group ALT allele frequency (assuming HWE)">
+##INFO=<ID=AC1,Number=1,Type=Float,Description="Max-likelihood estimate of the first ALT allele count (no HWE assumption)">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Root-mean-square mapping quality of covering reads">
+##INFO=<ID=FQ,Number=1,Type=Float,Description="Phred probability of all samples being the same">
+##INFO=<ID=PV4,Number=4,Type=Float,Description="P-values for strand bias, baseQ bias, mapQ bias and tail distance bias">
+##INFO=<ID=G3,Number=3,Type=Float,Description="ML estimate of genotype frequencies">
+##INFO=<ID=HWE,Number=1,Type=Float,Description="Chi^2 based HWE test P-value based on G3">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##bcftools_callVersion=1.3.1-98-ga6a7829+htslib-1.3.1-64-g74bcfd7
+##bcftools_callCommand=call -c NA06985.mpileup; Date=Sun Sep  5 21:54:10 2021
+#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA06985
+1       13999984        .       T       .       28.2394 .       DP=1;MQ0F=0;AC1=2;DP4=0,0,0,0;MQ=0;FQ=-30.0004  GT:PL   0/0:0
+```
+```sh
 $ bcftools call -m -v -Ob -o NA06985_multiallelic_variant.bcf NA06985.mpileup
-$ bcftools +fill-tags NA06985.vcf -Ob -o NA06985_with_allelefreqs.bcf
+```
+Let's fill the allele frequency tags
 
+```sh
+$ bcftools +fill-tags NA06985.vcf -Ob -o NA06985_with_allelefreqs.bcf
+```
+```sh
 $ bcftools stats NA06985.vcf > NA06985_vcfstats.txt
 $ bcftools stats NA06985_variant.vcf > NA06985_variant_vcfstats.txt
 $ plot-vcfstats NA06985_variant_vcfstats.txt -p NA06985_variant
 $ plot-vcfstats NA06985_vcfstats.txt -p NA06985
+```
 
+```sh
 $ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%AF\n' NA06985_with_allelefreqs.bcf > query.txt
 $ head query.txt 
 1	13999984	T	.	.
