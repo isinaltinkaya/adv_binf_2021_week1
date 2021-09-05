@@ -40,11 +40,35 @@ $ ssh -X isin@ricco.popgen.dk
 
 ## Setting up the working environment
 
+
+If you are working on the ricco server, and therefore will not be not clonning the repository, all commands in the following seven exercises will be relative to the base directory called `/TEACHING/BIOINF21/adv_binf_2021_week1`
+
+```sh
+day1
+├── data
+│   ├── alignment
+│   ├── fasta
+│   ├── fastq
+│   ├── reference_fasta
+│   └── reference_fasta_hs37d5
+├── exercises
+│   ├── alignment_formats
+│   ├── mapdamage
+│   ├── trimming
+│   └── variant_call_format
+├── Makefile
+└── README.md
+```
+
 Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see [GithHub Lab](https://lab.github.com/) (optional).
+
 
 ```sh
 $ git clone https://github.com/isinaltinkaya/adv_binf_2021_week1
-$ cd adv_binf_2021_week1
+$ cd adv_binf_2021_week1/day1
+# gunzip files
+$ make unzip
+# copy reference files
+$ make copy
 ```
-
 
