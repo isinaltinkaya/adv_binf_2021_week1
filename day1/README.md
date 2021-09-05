@@ -14,6 +14,13 @@
 
 **6. Variant Call Formats: VCF and BCF**
 
+
+
+Class working directory: `/TEACHING/BIOINF21/adv_binf_2021_week1`
+
+
+
+
 ## Getting started
 
 
