@@ -71,8 +71,13 @@ Git is a version-control system software for tracking changes in a set of files,
 
 ```sh
 $ git clone https://github.com/isinaltinkaya/adv_binf_2021_week1
-$ cd adv_binf_2021_week1
+$ cd adv_binf_2021_week1/day1
+# gunzip files
+$ make gunzip
+# copy reference files
+$ make copy
 ```
+
 ___
 ___
 ___
@@ -173,9 +178,14 @@ sequence3	59
 sequence4	155
 ```
 
-**1.7. Download chromosome 21 of h19 reference genome**
+**1.7. Optional: Download and index the reference genomes**
 ```sh
 wget 'ftp://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr21.fa.gz' -O chr21.fa.gz
+bwa index chr21.fa.gz
+samtools faidx chr21.fa.gz
+wget 'ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz' -O hs37d5.fa.gz
+bwa index hs37d5.fa.gz
+samtools faidx hs37d5.fa.gz
 ```
 
 ___
