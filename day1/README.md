@@ -49,8 +49,7 @@ $ ssh -X isin@ricco.popgen.dk
 ### Setting up the working environment
 
 
-Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see [GithHub Lab](https://lab.github.com/) (optional).
-
+If you are working on the ricco server, and therefore will not be not clonning the repository, all commands in the following seven exercises will be relative to the base directory called `/TEACHING/BIOINF21/adv_binf_2021_week1`
 
 ```sh
 day1
@@ -66,6 +65,8 @@ day1
     ├── trimming
     └── variant_call_format
 ```
+
+Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see [GithHub Lab](https://lab.github.com/) (optional).
 
 
 ```sh
@@ -975,4 +976,3 @@ Class working directory including the results of analyses above: `/TEACHING/BIOI
 ├── programs
 └── github
 ```
-
