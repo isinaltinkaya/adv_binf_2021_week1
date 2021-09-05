@@ -1,12 +1,10 @@
 # Day 1: NGS data - Workflow, formats and programs
 
 
+## Getting started
 
 
-# Getting started
-
-
-## Connecting to the server via SSH
+### Connecting to the server via SSH
 
 
 
@@ -30,22 +28,32 @@ $ ssh -X isin@ricco.popgen.dk
 
 
 
-## Working environment setup
-
-
-Class working directory: `/TEACHING/BIOINF21/`
-
+### Setting up the working environment
 
 
 
 CHANGEME
 We have 3 main directories.
 
+```sh
+data
+├── fastq
+│   ├── DATA_L001_R1.fastq.gz
+│   └── DATA_L001_R2.fastq.gz
+└── reference_fasta
+    ├── chr21.fa.gz
+    ├── chr21.fa.gz.amb
+    ├── chr21.fa.gz.ann
+    ├── chr21.fa.gz.bwt
+    ├── chr21.fa.gz.pac
+    └── chr21.fa.gz.sa
+```
+
 ```bash
 /TEACHING/BIOINF21/
 ├── data
 ├── programs
-└── students
+└── 
 ```
 
 
@@ -55,10 +63,10 @@ $ cd adv_binf_2021_week1
 ```
 
 
-### FASTA
+## 1. Working with FASTA files
 
 
-A FASTA format consists of:
+A file in FASTA format consists of:
 - One line starting with a ">" sign followed by a sequence identifier.
 - One or more lines containing the sequence itself. 
 
@@ -77,7 +85,7 @@ CCGTGCTGGGCCCCTGTCCCCGGGAGGGCCCCGGCGGGGTGGGTGCGGGGGGCGTGCGGGGCGGGTGCAGGCGAG
 ACAGA
 ```
 
-First, we need to index the FASTA file:
+**1.1. First, we need to index the FASTA file**
 
 ```sh
 $ samtools faidx example.fasta
@@ -88,24 +96,24 @@ sequence3	59	182	59	60
 sequence4	155	253	75	76
 ```
 
-- Count the number of sequences in a FASTA file
+**1.2. Count the number of sequences in a FASTA file**
 
 ```sh
 $ grep -c ">" example.fasta
 4
 ```
 
-- Fetching regions from FASTA files
+**1.3. Fetching regions from FASTA files**
 
-We will use `samtools faidx` to fetch genomic sequences:
+We use `samtools faidx` to fetch genomic sequences:
 
 ```sh
 samtools faidx genome.fa <chromosome|sequence id>:<start>-<end>
 ```
 
 
-Coordinates are 1-based in FASTA files.
-Ranges in `samtools faidx` is inclusive, so that `sequence1:2-10` corresponds to `[2-10]` from `sequence1`.
+- Coordinates are 1-based in FASTA files.
+- Ranges in `samtools faidx` is inclusive, so that `sequence1:2-10` corresponds to `[2-10]` from `sequence1`.
 
 
 ```sh
@@ -115,7 +123,7 @@ ACCTCCCCT
 ```
 
 
-Find k-mer in fasta file
+**1.4. Find the kmer "CAGGTGAGC" in the FASTA file**
 
 ```sh
 $ grep "CAGGTGAGC" example.fasta
@@ -123,7 +131,7 @@ CGCGCTGTCCGCGCTGAGCCACCTGCACGCGTGCCAGCTGCGAGTGGACCCGGCCAGCTTCCAGGTGAGCGGCTG
 ```
 
 
-Get sequence list from FASTA file and save it to a file called "sequences.txt"
+**1.5. Get sequence list from FASTA file and save it to a file called "sequences.txt"**
 ```sh
 $ grep "^>" example.fasta| tr -d '>' >> sequences.txt
 $ cat sequences
@@ -133,7 +141,7 @@ sequence3
 sequence4
 ```
 
-Get sequences and their lengths
+**1.6. Get sequence names and their lengths**
 ```sh
 $ cat example.fasta.fai  | cut -f1,2
 sequence1	72
@@ -142,29 +150,15 @@ sequence3	59
 sequence4	155
 ```
 
-Download chromosome 21 of h19 reference genome:
+**1.7. Download chromosome 21 of h19 reference genome**
 ```sh
 wget 'ftp://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr21.fa.gz' -O chr21.fa.gz
 ```
 
-```sh
-data
-├── fastq
-│   ├── DATA_L001_R1.fastq.gz
-│   └── DATA_L001_R2.fastq.gz
-└── reference_fasta
-    ├── chr21.fa.gz
-    ├── chr21.fa.gz.amb
-    ├── chr21.fa.gz.ann
-    ├── chr21.fa.gz.bwt
-    ├── chr21.fa.gz.pac
-    └── chr21.fa.gz.sa
-```
 
 
 
-
-### FASTQ
+## 2. FASTQ
 
 
 A FASTQ file consists of four lines per sequence:
@@ -174,43 +168,112 @@ A FASTQ file consists of four lines per sequence:
 - Line 3 begins with a `+` character and is optionally followed by the sequence identifier and descriptions (if any).
 - Line 4 encodes the quality values for the sequence in Line 2, and must contain the same number of symbols as letters in the sequence. Each letter in line 4 corresponds to the base quality score of the sequence with the same index in line 2. 
 
-- Extract only the sequences from a fastq file
+**2.1 Get the first read from lane 1 read 1**
 ```sh
-sed -n '2~4p' file.fq
+$ zcat DATA_L001_R1.fastq.gz | head -4
+@NS500474:51:HK7FVAFXX:1:11101:5669:1056 1:N:0:GACACT+NTGACG
+CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT
++
+AAAAAEEEEEEEEEEEEEEEE6EEEEEEEEEEEEEEEEAEEEEE/EEEE/EEEEEAEEEEEEEEEEEEEEEE/<A
 ```
 
-- Mean length
+**2.2 Get the first read in R1 and R2 from lane 1 and 2**
+
 ```sh
-awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}' input.fastq
+$ for R in DATA_L00{1,2}_R*.fastq.gz; do echo "FILE: $R"; zcat $R|head -4;done
+FILE: DATA_L001_R1.fastq.gz
+@NS500474:51:HK7FVAFXX:1:11101:5669:1056 1:N:0:GACACT+NTGACG
+CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT
++
+AAAAAEEEEEEEEEEEEEEEE6EEEEEEEEEEEEEEEEAEEEEE/EEEE/EEEEEAEEEEEEEEEEEEEEEE/<A
+FILE: DATA_L001_R2.fastq.gz
+@NS500474:51:HK7FVAFXX:1:11101:5669:1056 2:N:0:GACACT+NTGACG
+GGGGGGGGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNGGGGGGGGGGGNNN
++
+AAAAAEEE######################################################E<E/EEAE<AE###
+FILE: DATA_L002_R1.fastq.gz
+@NS500474:51:HK7FVAFXX:2:11101:7383:1057 1:N:0:GACACT+NTGACG
+TTGTTCGACATTCTTGTCCGAGCCCAGAAGAAGCGATCGGAAGAGCACACGTCTGAACCAAGTCACGACACTAT
++
+/AAAAEEAAEEAE/AAAAAEEEAEAEEEEEEEE<EAEEEEEEAEEEEEEEE/A6AEEEA/AA<EAA/EAEEE/E
+FILE: DATA_L002_R2.fastq.gz
+@NS500474:51:HK7FVAFXX:2:11101:7383:1057 2:N:0:GACACT+NTGACG
+GGGGGGGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNGGGGGGGGGGNNNNN
++
+AAAAAEE######################################################///////<//#####
 ```
 
-- Which lane contains the highest and lowest number of raw sequence reads?
-
-
-- How many reads in each fastq file contain the motif "GATTACA"?
-
-- coverage
-- depth
-
-- Count the number of reads in fastq files
+**2.3 Return only the first 5 reads from a FASTQ file**
+```sh
+$ zcat DATA_L001_R1.fastq.gz | sed -n '2~4p' | head -5
+CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT
+ATGCGGGGCTGAGGCTGCTGGAAGATCGGAAGAGCACACGTCTGAACTCCAGTCACGACACTATCTCGTATGCCGT
+GCCCGGCACGATCACACCGGGGCTAGATCGGAAGAGCACACGTCTGAACTCCAGTCACGAGACTATCTCGTATGC
+GCCGCGGAACTCGCAAAGGCGTTCGGCGTGGACGTCCCGACTGCCAAACGCAGAACGGAAGAGCACACGTCAGAA
+GGCTGTTGCTGCCTCGGGAGCATCAATCTCGCGAGATCGGAAGAGCACACGTCTGAACTCGAGTCACGACACTAT
+```
+or
 
 ```sh
-cat sample.fastq | echo $((`wc -l` / 4))
+$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print $0}'|head -5
+CAGCTGGCGTCGGCCGACGTGATCACCTTCACGATCGGAAGAACACACGTCTGAACTCCAGTCACGACACTATCT
+ATGCGGGGCTGAGGCTGCTGGAAGATCGGAAGAGCACACGTCTGAACTCCAGTCACGACACTATCTCGTATGCCGT
+GCCCGGCACGATCACACCGGGGCTAGATCGGAAGAGCACACGTCTGAACTCCAGTCACGAGACTATCTCGTATGC
+GCCGCGGAACTCGCAAAGGCGTTCGGCGTGGACGTCCCGACTGCCAAACGCAGAACGGAAGAGCACACGTCAGAA
+GGCTGTTGCTGCCTCGGGAGCATCAATCTCGCGAGATCGGAAGAGCACACGTCTGAACTCGAGTCACGACACTAT
+```
+**2.4 Calculate the mean length**
+
+```sh
+$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}'
+75.37
+```
+
+**2.5 Which lane contains the highest and lowest number of raw sequence reads?**
+
+```sh
+$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print $0}'|wc -l
+1416689
 ```
 
 or
 
 ```sh
-cat DATA_L001_R1.fastq.gz | grep @ | wc -l
+$ zcat DATA_L001_R1.fastq.gz |  echo $((`wc -l` / 4))
+1416689
 ```
 
-- Count the number of reads in gzipped fastq files
-- 
-- 
-```shell
-zcat sample.fastq.gz | echo $((`wc -l` / 4))
+or
+
+```sh
+$ zcat DATA_L001_R1.fastq.gz | grep -c "^@" 
+1416689
 ```
 
+**2.6 How many times do we see the motif "GATTACA"?**
+```sh
+$ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA" 
+1147
+```
+
+
+
+**2.7 Get fragment size statistics and distribution from a FASTQ file**
+
+```sh
+$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' >> fragment_lengths_L001_R1
+```
+
+
+```sh
+$ R
+> d<- scan("fragment_lengths_L001_R1")
+Read 1416689 items
+> hist(d)
+> summary(d)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  35.00   75.00   76.00   75.37   76.00   76.00 
+```
 
 ## Adapter trimming using fastp
 
@@ -483,3 +546,6 @@ bgzip files can be uncompressed with gzip
 - Sort by name, sort by coordinates
 - Cigar strings
 - Write a code for counting the number of lines in each fastq file and write the results into a new file.
+
+Class working directory: `/TEACHING/BIOINF21/`
+
