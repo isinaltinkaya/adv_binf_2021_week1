@@ -289,7 +289,7 @@ $ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA"
 **2.7. Get fragment size distribution and related statistics from a FASTQ file**
 
 ```sh
-$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' >> fragment_lengths_L001_R1.txt
+$ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' | datamash mean 1
 ```
 
 
@@ -961,3 +961,4 @@ ___
 
 Class working directory including the results of analyses above: `/TEACHING/BIOINF21/`
 
+G
