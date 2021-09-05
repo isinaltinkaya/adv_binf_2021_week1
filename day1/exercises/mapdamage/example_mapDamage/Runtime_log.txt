@@ -1,0 +1,7 @@
+2021-09-05 18:03:49,755 mapdamage.main INFO Started with the command: /usr/local/bin/mapDamage -i ../../data/alignment/DATA.bam -r ../../data/reference_fasta/chr21.fa.gz --no-stats
+2021-09-05 18:03:49,758 mapdamage.reader INFO Found 1 libraries in BAM file
+2021-09-05 18:03:49,760 mapdamage.main INFO Reading from '../../data/alignment/DATA.bam'
+2021-09-05 18:03:49,761 mapdamage.main INFO Writing results to 'DATA.mapDamage/'
+2021-09-05 18:03:51,027 mapdamage.rscript INFO Saving misincorporation plot to '/TEACHING/BIOINF21/github/day1/exercises/mapdamage/DATA.mapDamage/Fragmisincorporation_plot.pdf'
+2021-09-05 18:03:51,558 mapdamage.rscript INFO Saving length distribution plot to '/TEACHING/BIOINF21/github/day1/exercises/mapdamage/DATA.mapDamage/Length_plot.pdf'
+2021-09-05 18:03:52,027 mapdamage.main INFO Successful run
