@@ -38,26 +38,9 @@ $ ssh -X isin@ricco.popgen.dk
 
 
 
-## Working environment setup
+## Setting up the working environment
 
-
-Class working directory: `/TEACHING/BIOINF21/`
-
-
-
-
-CHANGEME
-We have 3 main directories.
-
-```bash
-/TEACHING/BIOINF21/
-├── data
-├── programs
-└── students
-```
-
-
-Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see https://lab.github.com/ (optional).
+Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see [GithHub Lab](https://lab.github.com/) (optional).
 
 ```sh
 $ git clone https://github.com/isinaltinkaya/adv_binf_2021_week1
