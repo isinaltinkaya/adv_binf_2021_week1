@@ -83,7 +83,7 @@ Working directory: `day1/data/fasta`
 **File extensions:** `.fasta` or `.fa` for generic FASTA (See [this link](https://en.wikipedia.org/wiki/FASTA_formathttps://en.wikipedia.org/wiki/FASTA_format) for details on other FASTA extensions `.fna` `.ffn` `.faa` and `.frn`)
 
 
-For each record:
+For each record, the FASTA file consists of two main fields:
 
 Line | Contains | Description | Example
 --- | --- | --- | ---
