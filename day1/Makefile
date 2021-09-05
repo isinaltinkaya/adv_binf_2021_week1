@@ -1,5 +1,5 @@
 unzip:
-	find . -name "*gz"| xargsd -n1 gunzip	
+	find . -name "*gz"| xargs -n1 gunzip	
 
 copy:
 	cp -v /TEACHING/BIOINF21/data/reference_fasta/chr21.fa.gz* data/reference_fasta/
