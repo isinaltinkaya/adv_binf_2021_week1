@@ -77,6 +77,8 @@ ___
 
 ## 1. Working with FASTA files
 
+Working directory: `day1/data/fasta`
+
 
 **File extensions:** `.fasta` or `.fa` for generic FASTA (See [this link](https://en.wikipedia.org/wiki/FASTA_formathttps://en.wikipedia.org/wiki/FASTA_format) for details on other FASTA extensions `.fna` `.ffn` `.faa` and `.frn`)
 
@@ -152,7 +154,7 @@ CGCGCTGTCCGCGCTGAGCCACCTGCACGCGTGCCAGCTGCGAGTGGACCCGGCCAGCTTCCAGGTGAGCGGCTG
 **1.5. Get sequence list from FASTA file and save it to a file called "sequences.txt"**
 ```sh
 $ grep "^>" example.fasta| tr -d '>' >> sequences.txt
-$ cat sequences
+$ cat sequences.txt
 sequence1
 sequence2
 sequence3
@@ -964,3 +966,4 @@ If you still have some time left, try to answer these questions:
 ___
 
 Class working directory including the results of analyses above: `/TEACHING/BIOINF21/`
+
