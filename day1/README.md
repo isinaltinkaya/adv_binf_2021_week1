@@ -42,27 +42,22 @@ $ ssh -X isin@ricco.popgen.dk
 ### Setting up the working environment
 
 
-CHANGEME
-We have 3 main directories.
+Git is a version-control system software for tracking changes in a set of files, and is useful for coordinating work among multiple people working in collaboration. GitHub is one of the most popular git repository hosting services. Git is not covered within the scope of this class, and will only be used for downloading the exercise materials. To learn more about git and GitHub, see [GithHub Lab](https://lab.github.com/) (optional).
+
 
 ```sh
+day1
 ├── data
 │   ├── alignment
 │   ├── fasta
 │   ├── fastq
-│   └── reference_fasta
+│   ├── reference_fasta
+│   └── reference_fasta_hs37d5
 └── exercises
     ├── alignment_formats
     ├── mapdamage
-    └── trimming
-
-```
-
-```bash
-/TEACHING/BIOINF21/
-├── data
-├── programs
-└── github
+    ├── trimming
+    └── variant_call_format
 ```
 
 
@@ -966,4 +961,11 @@ If you still have some time left, try to answer these questions:
 ___
 
 Class working directory including the results of analyses above: `/TEACHING/BIOINF21/`
+
+```bash
+/TEACHING/BIOINF21/
+├── data
+├── programs
+└── github
+```
 
