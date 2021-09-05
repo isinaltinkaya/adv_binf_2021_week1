@@ -61,6 +61,7 @@ ___
 ___
 ___
 
+
 ## 1. Working with FASTA files
 
 
@@ -287,6 +288,11 @@ Read 1416689 items
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   35.00   75.00   76.00   75.37   76.00   76.00 
 ```
+
+___
+___
+___
+
 
 ## 3. Adapter trimming using [fastp](https://github.com/OpenGene/fastp)
 
@@ -799,13 +805,31 @@ BCF format is the binary equivalent of the VCF file format.
 
 ```sh
 $ bcftools mpileup --fasta-ref ../../data/reference_fasta_hs37d5/chr1.fa.gz NA06985.bam -r 1 > NA06985.mpileup
-$ bcftools call -v -c NA06985.mpileup > NA06985_variant.vcf
-$ bcftools call -m -v -Ob -o NA06985_multiallelic_variant.bcf NA06985.mpileup
+
 $ bcftools call -c NA06985.mpileup > NA06985.vcf
+
+# Call only for variant sites
+$ bcftools call -v -c NA06985.mpileup > NA06985_variant.vcf
+
+$ head NA06985.vcf 
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftoolsVersion=1.3.1-98-ga6a7829+htslib-1.3.1-64-g74bcfd7
+##bcftoolsCommand=mpileup --fasta-ref ../../data/reference_fasta_hs37d5/chr1.fa.gz -r 1 NA06985.bam
+##reference=file://../../data/reference_fasta_hs37d5/chr1.fa.gz
+##contig=<ID=1,length=249250621>
+##contig=<ID=2,length=243199373>
+##contig=<ID=3,length=198022430>
+##contig=<ID=4,length=191154276>
+##contig=<ID=5,length=180915260>
+$ bcftools call -m -v -Ob -o NA06985_multiallelic_variant.bcf NA06985.mpileup
 $ bcftools +fill-tags NA06985.vcf -Ob -o NA06985_with_allelefreqs.bcf
 
 $ bcftools stats NA06985.vcf > NA06985_vcfstats.txt
 $ bcftools stats NA06985_variant.vcf > NA06985_variant_vcfstats.txt
+$ plot-vcfstats NA06985_variant_vcfstats.txt -p NA06985_variant
+$ plot-vcfstats NA06985_vcfstats.txt -p NA06985
+
 $ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%AF\n' NA06985_with_allelefreqs.bcf > query.txt
 $ head query.txt 
 1	13999984	T	.	.
@@ -831,7 +855,8 @@ ___
 
 **bgzip (Blocked GNU Zip Format):** Sequence files are usually zipped by bgzip (e.g. `vcf.gz`). bgzip files can be uncompressed with using gunzip
 
-- Base counts: How many As, Cs, Gs, Ts and Ns are there in each FASTQ file?
+If you still have some time left, try to answer these questions:
+- How many As, Cs, Gs, Ts and Ns are there in each FASTQ file?
 - How can we calculate the GC content using a FASTQ file?
 - How long is the reference genome? 
 - How many reads has their mates were unmapped?
