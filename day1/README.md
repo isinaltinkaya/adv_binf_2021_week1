@@ -791,74 +791,52 @@ ___
 ___
 
 
-## 6. bcf/vcf
+## 6. Variant Call Formats: VCF and BCF
 
 
 
-$ bcftools mpileup DATA.bam | bcftools call -v -c >> DATA.vcf
+BCF format is the binary equivalent of the VCF file format.
 
-$ bcftools mpileup DATA.bam >> DATA.mpileup
-bcftools mpileup |bcftools call
-then
-bcftools mpileup |bcftools call -v >onlyvars
+```sh
+$ bcftools mpileup --fasta-ref ../../data/reference_fasta_hs37d5/chr1.fa.gz NA06985.bam -r 1 > NA06985.mpileup
+$ bcftools call -v -c NA06985.mpileup > NA06985_variant.vcf
+$ bcftools call -m -v -Ob -o NA06985_multiallelic_variant.bcf NA06985.mpileup
+$ bcftools call -c NA06985.mpileup > NA06985.vcf
+$ bcftools +fill-tags NA06985.vcf -Ob -o NA06985_with_allelefreqs.bcf
 
-
-
-#generates vcf
-./bcftools/bcftools mpileup -b bams.list --no-reference |less
-./bcftools/bcftools mpileup -b bams.list --fasta-ref hs37d5.fa.gz |./bcftools/bcftools call -m -v|less
-
-./bcftools/bcftools mpileup -b bams.list --fasta-ref hs37d5.fa.gz -r 1 |./bcftools/bcftools call -m -v -Ob -o res.bcf
-bcftools +fill-tags res.bcf -Ob -o res.with.af.bcf
-bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%AF\n' res.with.af.bcf
-./angsd/angsd -b bams.list -domajorminor 1 -gl 1 -domaf 1 -r 1 -snp_pval 1e-6
-gunzip -c angsdput.mafs.gz
-
-
-
-bcftools mpileup |bcftools call
-then
-bcftools mpileup |bcftools call -v >onlyvars
-Then inspect the vcf and find the header and data part
-then an example of bcftools query
-
-
-./bcftools/bcftools mpileup -b bams.list --no-reference |less
-./bcftools/bcftools mpileup -b bams.list --fasta-ref hs37d5.fa.gz |./bcftools/bcftools call -m -v|less
-
-./bcftools/bcftools mpileup -b bams.list --fasta-ref hs37d5.fa.gz -r 1 |./bcftools/bcftools call -m -v -Ob -o res.bcf
-bcftools +fill-tags res.bcf -Ob -o res.with.af.bcf
-bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%AF\n' res.with.af.bcf
-./angsd/angsd -b bams.list -domajorminor 1 -gl 1 -domaf 1 -r 1 -snp_pval 1e-6
-
-gunzip -c angsdput.mafs.gz
-
-
-
-```bash
-samtools mpileup ${FILE}
+$ bcftools stats NA06985.vcf > NA06985_vcfstats.txt
+$ bcftools stats NA06985_variant.vcf > NA06985_variant_vcfstats.txt
+$ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%AF\n' NA06985_with_allelefreqs.bcf > query.txt
+$ head query.txt 
+1	13999984	T	.	.
+1	13999985	C	.	.
+1	13999986	C	.	.
+1	13999987	G	.	.
+1	13999988	C	.	.
+1	13999989	A	.	.
+1	13999990	G	.	.
+1	13999991	T	.	.
+1	13999992	C	.	.
+1	13999993	C	.	.
 ```
 
+
 ___
 ___
 ___
 
 
 
-### Other
+### Extras
 
-### bgzip (Blocked GNU Zip Format)
-bgzip files can be uncompressed with gzip
+**bgzip (Blocked GNU Zip Format):** Sequence files are usually zipped by bgzip (e.g. `vcf.gz`). bgzip files can be uncompressed with using gunzip
 
-- Base counts: How many As, Cs, Gs, Ts and Ns are there in the fastq file?
-- GC content
-- What is the coverage when we use 1000G
-- Which chromosome has the most reads aligned to it? `samtools view -c`
-- Mean read length, read length distribution
+- Base counts: How many As, Cs, Gs, Ts and Ns are there in each FASTQ file?
+- How can we calculate the GC content using a FASTQ file?
 - How long is the reference genome? 
 - How many reads has their mates were unmapped?
 - How many reads are there that was aligned to a region included in 1000G sites with a mapping quality 30 as minimum?
-- Sort by name, sort by coordinates
+- How can we sort a BAM file by coordinates?
 
 
 ___
