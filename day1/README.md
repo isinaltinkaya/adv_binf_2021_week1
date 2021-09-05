@@ -290,6 +290,7 @@ $ zcat DATA_L001_R1.fastq.gz | grep -c "GATTACA"
 
 ```sh
 $ zcat DATA_L001_R1.fastq.gz | awk 'NR%4==2{print length($0)}' | datamash mean 1
+75.369972520433
 ```
 
 
