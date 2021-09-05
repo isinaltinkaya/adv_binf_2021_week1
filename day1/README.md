@@ -73,7 +73,7 @@ Git is a version-control system software for tracking changes in a set of files,
 $ git clone https://github.com/isinaltinkaya/adv_binf_2021_week1
 $ cd adv_binf_2021_week1/day1
 # gunzip files
-$ make gunzip
+$ make unzip
 # copy reference files
 $ make copy
 ```
@@ -974,3 +974,5 @@ If you still have some time left, try to answer these questions:
 - How many reads has their mates were unmapped?
 - How many reads are there that was aligned to a region included in 1000G sites with a mapping quality 30 as minimum?
 - How can we sort a BAM file by coordinates?
+
+
