@@ -6,7 +6,7 @@
 Day | Time |  Subject | Lecturer
 --- | --- | --- | ---
 Day 1 - Monday | 9:15 - 12 | NGS data - Workflow, formats and programs | Thorfinn Sand Korneliussen
-Day 2 - Tuesday | 13:15 - 16 | - | -
+Day 2 - Tuesday | 13:15 - 16 | - | Rasmus A. Henriksen
 Day 3 - Friday | 9:15 - 12 | - | - | -
 
 Friday(10/9/2021, Lei Zhao): 
