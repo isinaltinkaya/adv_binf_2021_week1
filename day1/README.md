@@ -163,7 +163,7 @@ CGCGCTGTCCGCGCTGAGCCACCTGCACGCGTGCCAGCTGCGAGTGGACCCGGCCAGCTTCCAGGTGAGCGGCTG
 
 **1.5. Get sequence list from FASTA file and save it to a file called "sequences.txt"**
 ```sh
-$ grep "^>" example.fasta| tr -d '>' >> sequences.txt
+$ grep "^>" example.fasta | tr -d '>' > sequences.txt
 $ cat sequences.txt
 sequence1
 sequence2
