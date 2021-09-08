@@ -88,6 +88,11 @@ sorted
 ## QUESTION
 1. Based on column 3 and 4, have we succesfully sorted the reads?
 
+~~~bash
+SRR002996.10376720	16	chr21	9719768	25	36M	*	0	0	AATTCTGAGAAACTTCTTTGTGAGGGTTGGATTTTT	@@@@?@@@?@?@??@???>><=8>6849',%0.%5+	XT:A:U	NM:i:2	X0:i:1	X1:i:0	XM:i:2	XO:i:0	XG:i:0	MD:Z:33C0A1
+SRR003003.12879416	0	chr21	9719769	37	36M	*	0	0	ATTCTGAGAAACTTCTTTGTGAGGGTTGGATTCATC	@99;<7:9=@3DB?ECEE@CBF@>;?@B@@?@A?@@	XT:A:U	NM:i:1	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:35T0
+SRR002994.3881533	0	chr21	9719772	37	36M	*	0	0	CTGAGAAACTTCTTTGTGAGGGTTGGATTCATTTCA	'&,/*2636B5;5@<?2E@?@=A?@@@@??>@A?@@	XT:A:U	NM:i:0	X0:i:1	X1:i:0	XM:i:0	XO:i:0	XG:i:0	MD:Z:36
+~~~
 ## Filtering
 To perform further alignments on raw bam files, we often need to filter the reads.
 Filtering can be done on mapping quality or filtering based on the type of alignment which can be determined based on the 2nd column containing a FLAG. 
