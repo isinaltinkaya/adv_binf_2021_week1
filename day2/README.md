@@ -87,25 +87,38 @@ sorted
 
 ## QUESTION
 1. Based on column 3 and 4, have we succesfully sorted the reads?
-
+At first glance the reads have been sorted succesfully according to the chromosome and the coordinate, which we can see if we look at the first couple of lines (3 reads shown)
 ~~~bash
+samtools view output_aln.sorted.bam | head -3
 SRR002996.10376720	16	chr21	9719768	25	36M	*	0	0	AATTCTGAGAAACTTCTTTGTGAGGGTTGGATTTTT	@@@@?@@@?@?@??@???>><=8>6849',%0.%5+	XT:A:U	NM:i:2	X0:i:1	X1:i:0	XM:i:2	XO:i:0	XG:i:0	MD:Z:33C0A1
 SRR003003.12879416	0	chr21	9719769	37	36M	*	0	0	ATTCTGAGAAACTTCTTTGTGAGGGTTGGATTCATC	@99;<7:9=@3DB?ECEE@CBF@>;?@B@@?@A?@@	XT:A:U	NM:i:1	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:35T0
 SRR002994.3881533	0	chr21	9719772	37	36M	*	0	0	CTGAGAAACTTCTTTGTGAGGGTTGGATTCATTTCA	'&,/*2636B5;5@<?2E@?@=A?@@@@??>@A?@@	XT:A:U	NM:i:0	X0:i:1	X1:i:0	XM:i:0	XO:i:0	XG:i:0	MD:Z:36
 ~~~
+However if we look at the last couple of lines
+~~~bash
+samtools view output_aln.sorted.bam | tail -3
+SRR002999.11626831	4	*	0	0	*	*	0	0	TAATGATGTAAAATGAGATTAATGATGTGTCATTTT	-?*?@8?@+@0;=B<;>)5>5<B6=3+808-2'-)3
+SRR002999.11627025	4	*	0	0	*	*	0	0	CGATTGTAATGGAATGGAATAGAATGGAATGGATTG	,?C<@30?0?,512:3*(/5,-*..++.*2-')&,,
+SRR002999.11627329	4	*	0	0	*	*	0	0	TAGCATAAAAAAACTAAAATTACTCTCATAGTGGTA	?<?7@:?4:;:5A(..9<'91(6:.+'+-*3))-&,
+~~~
+We can see these reads have no information regarding the chromosome and the coordinate (column 3 and 4). This is because the reads are unaligned. Which we need to filter out.
+
 ## Filtering
-To perform further alignments on raw bam files, we often need to filter the reads.
-Filtering can be done on mapping quality or filtering based on the type of alignment which can be determined based on the 2nd column containing a FLAG. 
+To perform further analysis on raw bam files, we often need to filter the reads.
+Filtering can be done on mapping quality (column 5) or filtering based on the type of alignment which can be determined based on the 2nd column containing a FLAG. 
 The flags can be further explained here (https://broadinstitute.github.io/picard/explain-flags.html)
 
 ~~~bash
 samtools view -F 4 -Sb output_aln.bam > output_aln.filter.bam
 ~~~
-After filtering we can then perform sorting again
+Ideally we should perform filtering before sorting
 
 ## QUESTION
 1. Which reads are filtered out using the parameters "-F 4"
-2. Which parameters do we need to include to filter reads with a mapping quality above 30
+-F means which read we should not include, flag 4 (look at the explain flag link) means unmapped reads.
+3. Which parameters do we need to include to filter reads with a mapping quality above 30
+Type in "samtools view" to see all the possible parameters
+ -q INT   only include reads with mapping quality >= INT [0]
 
 ## Statistics
 We can get simple stats of the bam files using "flagstat"
