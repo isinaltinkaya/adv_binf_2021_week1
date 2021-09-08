@@ -119,7 +119,7 @@ Ideally we should perform filtering before sorting
 
 -F means which read we should not include, flag 4 (look at the explain flag link) means unmapped reads.
 
-3. Which parameters do we need to include to filter reads with a mapping quality above 30
+2. Which parameters do we need to include to filter reads with a mapping quality above 30
 
 Type in "samtools view" to see all the possible parameters
 
