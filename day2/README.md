@@ -87,6 +87,7 @@ sorted
 
 ## QUESTION
 1. Based on column 3 and 4, have we succesfully sorted the reads?
+
 At first glance the reads have been sorted succesfully according to the chromosome and the coordinate, which we can see if we look at the first couple of lines (3 reads shown)
 ~~~bash
 samtools view output_aln.sorted.bam | head -3
