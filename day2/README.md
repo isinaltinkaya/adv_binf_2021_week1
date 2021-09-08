@@ -76,6 +76,16 @@ samtools view -Sb output_aln.sam > output_aln.bam
 ## QUESTION
 1. Try to convert sam file to .cram file (a different .sam conversion)
 2. What is the difference between the commands creating the .bam and .cram
+~~~bash
+samtools view -T chr21.fa.gz -SC output_aln.sam > output_aln.cram
+~~~
+Creating the cram input file need the "-C" parameter which requires the "-T" parameter.
+The "-S" parameter is also described below.
+~~~bash
+-C       output CRAM (requires -T)
+-T, --reference FILE
+-S       ignored (input format is auto-detected)
+~~~
 
 ## Sorting
 Often we need a file sorted on genomic coordinates. You can use "samtools sort" for this
@@ -113,6 +123,9 @@ The flags can be further explained here (https://broadinstitute.github.io/picard
 samtools view -F 4 -Sb output_aln.bam > output_aln.filter.bam
 ~~~
 Ideally we should perform filtering before sorting
+
+
+NOTE: You can of course also perform similar filtering, sorting and file conversion on the sam file created by the bwa mem command
 
 ## QUESTION
 1. Which reads are filtered out using the parameters "-F 4"
