@@ -147,6 +147,29 @@ samtools flagstat output_aln.bam
 
 ### QUESTION
 1. Which of the alignment methods bwa aln and bwa mem generates the most aligned reads?
+Just by looking at the raw sam files
+~~~bash
+samtools flagstat output_aln.sam 
+5277758 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+0 + 0 supplementary
+0 + 0 duplicates
+4271033 + 0 mapped (80.93% : N/A)
+
+samtools flagstat output_mem.sam 
+5277758 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+0 + 0 supplementary
+0 + 0 duplicates
+3754281 + 0 mapped (71.13% : N/A)
+~~~
+
+So we see that the output from bwa aln (output_aln) has a higher number of aligned reads (4271033) compared to the output from bwa mem (3754281). This is because bwa aln is better for shorter sequence reads. The average read length can be found by using the command from day1
+~~~bash
+zcat NA19238.fastq.gz | awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}'
+36
+~~~
+
 
 To generate more various statistics about the mapping we can use
  
