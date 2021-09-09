@@ -7,7 +7,7 @@ Day | Time |  Subject | Lecturer
 --- | --- | --- | ---
 Day 1 - Monday | 9:15 - 12 | NGS data - Workflow, formats and programs | Thorfinn Sand Korneliussen
 Day 2 - Tuesday | 13:15 - 16 | Mapping - Suffix arrays and Burrows-Wheeler Transform | Rasmus A. Henriksen
-Day 3 - Friday | 9:15 - 12 | - | - | -
+Day 3 - Friday | 9:15 - 12 | MapQ and Genotype Likelihoods | Lei Zhao
 
 Friday(10/9/2021, Lei Zhao): 
 Given that the BWT algorithm is introduced, I will introduce the MapQ score, a measurement to assess alignment. Based on the On the accuracy of short read mapping.
