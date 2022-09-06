@@ -16,6 +16,8 @@ command zmore, which is like more, but decompressing the file first.
 
 Before we start its important to note that you should try to run the command with no arguments - the help page will get an explanation of the way run the command.
 
+You should all copy, using cp, the reference file (chr21.fa.gz) to your own home directory and build the index yourself.
+
 ## Indexing for BWA alignment
 Now you should map the reads in the fastq files against the reference genome. First, you
 have to make the index (the Burrows-Wheler transform) and then run the mapping. 
@@ -32,7 +34,7 @@ NOTE: During the index construction we see the "[bwa_index] Construct SA from BW
 Once the index is made, the second step is to map the reads, the aligners are both capable of alinging paired-end and single-end sequencing.
 
 # Mapping
-We will try multiple different alignment methods all based on the Burrows-Wheeler tranform. Namely bwa and Bowtie2
+We will try multiple different alignment methods all based on the Burrows-Wheeler tranform. Namely the different approaches of bwa
 
 If you run the bwa alignment commands with no arguments to get info about how to use it, then the number
 of options may be a bit overwhelming, but you can run it with no additional options.
@@ -45,14 +47,20 @@ decompress them. By default the result comes on stdout (in the terminal), so you
 
 ## BWA ALN
 First we will find the coordinates of our input reads files in the Suffix Array (SA) created in the index files
-~~~bash
-bwa aln -t 2 reference_file readfile_1 > readfile1_SA.sai
-~~~
 
-Then we will generate alignments in the SAM format given the single-end read by searching in the SA intervals
-~~~bash
-bwa samse reference_file readfile1_SA.sai readfile_1 > output_aln.sam
-~~~
+The help page for bwa can be found at http://bio-bwa.sourceforge.net/bwa.shtml and further information can be found by simply typing bwa in your terminal
+
+Q1) Which command do we need in order to generate the Suffix Array given the input reads?
+
+/~~~bash
+/bwa aln -t 2 reference_file readfile_1 > readfile1_SA.sai
+/~~~
+
+Q2) Using the generated SA intervals, perform single end alignment using the reference genome and the provided sequencing reads
+/Then we will generate alignments in the SAM format given the single-end read by searching in the SA intervals
+/~~~bash
+/bwa samse reference_file readfile1_SA.sai readfile_1 > output_aln.sam
+/~~~
 
 ## BWA MEM
 We can also perform alignment using bwa mem
