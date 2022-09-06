@@ -45,145 +45,54 @@ has multiple cores.
 All of the commands reads the compressed fastq files directly, so you need not
 decompress them. By default the result comes on stdout (in the terminal), so you have to redirect to a file using ">". 
 
-## BWA ALN
+## BWA ALIGNMENT using suffix arrays
 First we will find the coordinates of our input reads files in the Suffix Array (SA) created in the index files
 
 The help page for bwa can be found at http://bio-bwa.sourceforge.net/bwa.shtml and further information can be found by simply typing bwa in your terminal
 
 Q1) Which command do we need in order to generate the Suffix Array given the input reads?
 
-/~~~bash
-/bwa aln -t 2 reference_file readfile_1 > readfile1_SA.sai
-/~~~
-
 Q2) Using the generated SA intervals, perform single end alignment using the reference genome and the provided sequencing reads
-/Then we will generate alignments in the SAM format given the single-end read by searching in the SA intervals
-/~~~bash
-/bwa samse reference_file readfile1_SA.sai readfile_1 > output_aln.sam
-/~~~
 
 ## BWA MEM
-We can also perform alignment using bwa mem
-the bwa mem mode, which is the most commonly used these days
-~~~bash
-bwa mem -t 2 reference_file readfile_1 > output_mem.sam
-~~~
+Q3) Use the bwa mem command to generate another alignment file
 
 # SAM/BAM output
-Now take a look at the sam file – the output – and see if it makes sense - with the examples below using the output from bwa aln. 
-
-Several tools have been created to handle sam files, we will use the samtools program. 
+Now take a look at the sam file from the previous the output from Q2 and Q3.
 
 ## File conversion
 We often need the compressed version of the sam format, which is called bam. To do this we use "samtools view" for converting between formats. Try
 the command without arguments to see the options.
 
-~~~bash
-samtools view -Sb output_aln.sam > output_aln.bam
-~~~
-## QUESTION
-1. Try to convert sam file to .cram file (a different .sam conversion)
-2. What is the difference between the commands creating the .bam and .cram
-~~~bash
-samtools view -T chr21.fa.gz -SC output_aln.sam > output_aln.cram
-~~~
-Creating the cram input file need the "-C" parameter which requires the "-T" parameter.
-The "-S" parameter is also described below.
-~~~bash
--C       output CRAM (requires -T)
--T, --reference FILE
--S       ignored (input format is auto-detected)
-~~~
+Q4) Convert the sam output files to both a bam format and cram format.
+
+Q5) What is the major difference between the conversion from sam to bam and sam to cram 
 
 ## Sorting
-Often we need a file sorted on genomic coordinates. You can use "samtools sort" for this
-~~~bash
-samtools sort -@ 2 output_aln.bam -o output_aln.sorted.bam
-~~~
-Try to use the "samtools view" to look at the bam files, with the 3rd and 4th column being the chromosomal position, so you can check if it is
-sorted
+Often we need a file sorted on genomic coordinates.
 
-## QUESTION
-1. Based on column 3 and 4, have we succesfully sorted the reads?
+Q6) Which command do we need for sorting the aligned files and which columns can we use to identify that the sorting was succesful? 
 
-At first glance the reads have been sorted succesfully according to the chromosome and the coordinate, which we can see if we look at the first couple of lines (3 reads shown)
-~~~bash
-samtools view output_aln.sorted.bam | head -3
-SRR002996.10376720	16	chr21	9719768	25	36M	*	0	0	AATTCTGAGAAACTTCTTTGTGAGGGTTGGATTTTT	@@@@?@@@?@?@??@???>><=8>6849',%0.%5+	XT:A:U	NM:i:2	X0:i:1	X1:i:0	XM:i:2	XO:i:0	XG:i:0	MD:Z:33C0A1
-SRR003003.12879416	0	chr21	9719769	37	36M	*	0	0	ATTCTGAGAAACTTCTTTGTGAGGGTTGGATTCATC	@99;<7:9=@3DB?ECEE@CBF@>;?@B@@?@A?@@	XT:A:U	NM:i:1	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:35T0
-SRR002994.3881533	0	chr21	9719772	37	36M	*	0	0	CTGAGAAACTTCTTTGTGAGGGTTGGATTCATTTCA	'&,/*2636B5;5@<?2E@?@=A?@@@@??>@A?@@	XT:A:U	NM:i:0	X0:i:1	X1:i:0	XM:i:0	XO:i:0	XG:i:0	MD:Z:36
-~~~
-However if we look at the last couple of lines
-~~~bash
-samtools view output_aln.sorted.bam | tail -3
-SRR002999.11626831	4	*	0	0	*	*	0	0	TAATGATGTAAAATGAGATTAATGATGTGTCATTTT	-?*?@8?@+@0;=B<;>)5>5<B6=3+808-2'-)3
-SRR002999.11627025	4	*	0	0	*	*	0	0	CGATTGTAATGGAATGGAATAGAATGGAATGGATTG	,?C<@30?0?,512:3*(/5,-*..++.*2-')&,,
-SRR002999.11627329	4	*	0	0	*	*	0	0	TAGCATAAAAAAACTAAAATTACTCTCATAGTGGTA	?<?7@:?4:;:5A(..9<'91(6:.+'+-*3))-&,
-~~~
-We can see these reads have no information regarding the chromosome and the coordinate (column 3 and 4). This is because the reads are unaligned. Which we need to filter out.
+Q7) Looking at the sorted reads according to their chromosome is there any problematic read�s?
 
 ## Filtering
 To perform further analysis on raw bam files, we often need to filter the reads.
 Filtering can be done on mapping quality (column 5) or filtering based on the type of alignment which can be determined based on the 2nd column containing a FLAG. 
 The flags can be further explained here (https://broadinstitute.github.io/picard/explain-flags.html)
 
-~~~bash
-samtools view -F 4 -Sb output_aln.bam > output_aln.filter.bam
-~~~
-Ideally we should perform filtering before sorting
+Q8) Filter out the reads with a mapping quality below 35 and keep all of the aligned reads
 
+Q9) What command would you use to filter out (based on the alignment flag) all of the reads aligning to the reverse strand
+
+Q10) What command would you use to keep all of the reads aligning to the reverse strand.
 
 NOTE: You can of course also perform similar filtering, sorting and file conversion on the sam file created by the bwa mem command
 
-## QUESTION
-1. Which reads are filtered out using the parameters "-F 4"
-
--F means which read we should not include, flag 4 (look at the explain flag link) means unmapped reads.
-
-2. Which parameters do we need to include to filter reads with a mapping quality above 30
-
-Type in "samtools view" to see all the possible parameters
-
- -q INT   only include reads with mapping quality >= INT [0]
-
 ## Statistics
-We can get simple stats of the bam files using "flagstat"
 
-~~~bash
-samtools flagstat output_aln.bam
-~~~
+Q11) What command do we need to extract simple statistics of both the aligned files obtained using the two difference mapping approaches 
 
-### QUESTION
-1. Which of the alignment methods bwa aln and bwa mem generates the most aligned reads?
-Just by looking at the raw sam files
-~~~bash
-samtools flagstat output_aln.sam 
-5277758 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-0 + 0 supplementary
-0 + 0 duplicates
-4271033 + 0 mapped (80.93% : N/A)
+Q12) Which of the two alignment commands generates the most aligned reads?
 
-samtools flagstat output_mem.sam 
-5277758 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-0 + 0 supplementary
-0 + 0 duplicates
-3754281 + 0 mapped (71.13% : N/A)
-~~~
-
-So we see that the output from bwa aln (output_aln) has a higher number of aligned reads (4271033) compared to the output from bwa mem (3754281). This is because bwa aln is better for shorter sequence reads. The average read length can be found by using the command from day1
-~~~bash
-zcat NA19238.fastq.gz | awk 'NR%4==2{sum+=length($0)}END{print sum/(NR/4)}'
-36
-~~~
-
-
-To generate more various statistics about the mapping we can use
- 
-~~~bash
-samtools stats output_aln.bam > output_aln.stats
-~~~
-These statistics can be visualized using plot-bamstats
-
-
+Q13) What is the average read length of the read sequence file, and how can this be used to explain the results obtained in Q12? 
+The average read length can be found by using the command from day1
